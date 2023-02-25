@@ -1,6 +1,7 @@
 package com.kreuterkeule.authvuejsapp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -51,5 +52,21 @@ public class AuthController {
                 user.getLastName(),
                 user.getEmail()
         );
+    }
+
+    record LoginRequest(String email, String password) {}
+    record LoginResponse(
+            Long id,
+            @JsonProperty("first_name") String firstName,
+            @JsonProperty("last_name") String lastName,
+            String email) {}
+
+    @PostMapping("/login")
+    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
+
+        var user = authService.login(loginRequest.email, loginRequest.password);
+
+        return new LoginResponse(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail());
+
     }
 }

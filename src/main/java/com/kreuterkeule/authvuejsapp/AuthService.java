@@ -29,4 +29,17 @@ public class AuthService {
                 UserEntity.of(firstName, lastName, email, passwordEncoder.encode(password))
         );
     }
+
+    public UserEntity login(String email, String password) {
+
+        // find user by email
+        var user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "email does not exist in database"));
+        // see if the passwords match
+        if (!passwordEncoder.matches(password, user.getPassword()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "password does not match password in database");
+
+        // return user
+        return user;
+    }
 }
