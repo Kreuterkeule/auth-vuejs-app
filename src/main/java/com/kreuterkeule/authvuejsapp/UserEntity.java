@@ -5,7 +5,9 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.relational.core.mapping.Table;
 
+@Table("USERS")
 @Getter @Setter @ToString
 public class UserEntity {
 
