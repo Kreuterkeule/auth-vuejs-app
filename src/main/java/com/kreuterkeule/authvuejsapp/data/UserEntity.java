@@ -1,4 +1,4 @@
-package com.kreuterkeule.authvuejsapp;
+package com.kreuterkeule.authvuejsapp.data;
 
 import lombok.Getter;
 import lombok.Setter;

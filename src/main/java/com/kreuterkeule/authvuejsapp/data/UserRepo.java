@@ -1,4 +1,4 @@
-package com.kreuterkeule.authvuejsapp;
+package com.kreuterkeule.authvuejsapp.data;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

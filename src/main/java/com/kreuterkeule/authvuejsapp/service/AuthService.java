@@ -1,5 +1,8 @@
-package com.kreuterkeule.authvuejsapp;
+package com.kreuterkeule.authvuejsapp.service;
 
+import com.kreuterkeule.authvuejsapp.constants.SecurityConstants;
+import com.kreuterkeule.authvuejsapp.data.UserEntity;
+import com.kreuterkeule.authvuejsapp.data.UserRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,7 +33,7 @@ public class AuthService {
         );
     }
 
-    public UserEntity login(String email, String password) {
+    public Login login(String email, String password) {
 
         // find user by email
         var user = userRepo.findByEmail(email)
@@ -40,6 +43,6 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "password does not match password in database");
 
         // return user
-        return user;
+        return Login.of(user.getId(), SecurityConstants.JWT_ACCESS_SECRET, SecurityConstants.JWT_REFRESH_SECRET);
     }
 }

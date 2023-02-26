@@ -1,12 +1,11 @@
-package com.kreuterkeule.authvuejsapp;
+package com.kreuterkeule.authvuejsapp.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.extern.java.Log;
-import org.springframework.http.HttpStatus;
+import com.kreuterkeule.authvuejsapp.data.UserRepo;
+import com.kreuterkeule.authvuejsapp.service.AuthService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -55,18 +54,21 @@ public class AuthController {
     }
 
     record LoginRequest(String email, String password) {}
-    record LoginResponse(
-            Long id,
-            @JsonProperty("first_name") String firstName,
-            @JsonProperty("last_name") String lastName,
-            String email) {}
+    record LoginResponse(String token) {}
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
+    public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
 
-        var user = authService.login(loginRequest.email, loginRequest.password);
+        var login = authService.login(loginRequest.email, loginRequest.password);
 
-        return new LoginResponse(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail());
+        Cookie cookie = new Cookie("refresh_token", login.getRefreshToken().getToken());
+        cookie.setMaxAge(3600);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/api");
+
+        response.addCookie(cookie);
+
+        return new LoginResponse(login.getAccessToken().getToken());
 
     }
 }
